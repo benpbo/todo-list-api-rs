@@ -1,4 +1,4 @@
-use super::{TaskRepository, TaskService};
+use super::super::{TaskRepository, TaskService};
 use crate::domain::Task;
 use actix::{Handler, Message};
 use anyhow::Result;
