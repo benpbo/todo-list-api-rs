@@ -1,13 +1,16 @@
 use super::{TaskRepository, TaskService};
 use crate::domain::Task;
+use actix::{Handler, Message};
 use anyhow::Result;
 
-pub trait GetAllTasks {
-    fn get_all_tasks(&self) -> Result<Vec<Task>>;
-}
+#[derive(Message)]
+#[rtype(result = "Result<Vec<Task>>")]
+pub struct GetAllTasksQuery;
 
-impl<R: TaskRepository> GetAllTasks for TaskService<R> {
-    fn get_all_tasks(&self) -> Result<Vec<Task>> {
+impl<R: TaskRepository> Handler<GetAllTasksQuery> for TaskService<R> {
+    type Result = Result<Vec<Task>>;
+
+    fn handle(&mut self, _msg: GetAllTasksQuery, _ctx: &mut Self::Context) -> Self::Result {
         self.repository.get_all_tasks()
     }
 }
