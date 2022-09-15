@@ -15,4 +15,9 @@ impl TaskRepository for InMemoryTaskRepository {
     fn get_all_tasks(&self) -> Result<Vec<Task>> {
         Ok(self.tasks.to_vec())
     }
+
+    fn add_task(&mut self, task: &Task) -> Result<()> {
+        self.tasks.push(task.clone());
+        Ok(())
+    }
 }
