@@ -1,13 +1,12 @@
 use super::TaskRepository;
 use actix::{Actor, Context};
-use std::pin::Pin;
 
 pub struct TaskService<R: TaskRepository> {
-    pub(crate) repository: Pin<Box<R>>,
+    pub(crate) repository: R,
 }
 
 impl<R: TaskRepository> TaskService<R> {
-    pub fn new(repository: Pin<Box<R>>) -> Self {
+    pub fn new(repository: R) -> Self {
         Self { repository }
     }
 }

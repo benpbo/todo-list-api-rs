@@ -17,7 +17,7 @@ use std::io;
 async fn main() -> io::Result<()> {
     let app = || {
         let task_repository = InMemoryTaskRepository::new();
-        let task_service = TaskService::new(Box::pin(task_repository)).start();
+        let task_service = TaskService::new(task_repository).start();
 
         App::new()
             .app_data(Data::new(task_service))
