@@ -1,5 +1,5 @@
 use super::super::{TaskRepository, TaskService};
-use crate::domain::Task;
+use crate::domain::{Task, TaskId};
 use actix::{Handler, Message};
 use anyhow::Result;
 
@@ -14,7 +14,7 @@ impl<R: TaskRepository> Handler<AddTaskCommand> for TaskService<R> {
 
     fn handle(&mut self, msg: AddTaskCommand, _ctx: &mut Self::Context) -> Self::Result {
         let new_task = Task {
-            id: 0,
+            id: TaskId::new(),
             description: msg.description,
             completed: false,
         };
