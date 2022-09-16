@@ -1,4 +1,7 @@
-use crate::{application::TaskRepository, domain::Task};
+use crate::{
+    application::TaskRepository,
+    domain::{Task, TaskId},
+};
 use anyhow::Result;
 
 pub struct InMemoryTaskRepository {
@@ -12,6 +15,10 @@ impl InMemoryTaskRepository {
 }
 
 impl TaskRepository for InMemoryTaskRepository {
+    fn get_task_by_id(&self, id: TaskId) -> Result<Option<Task>> {
+        Ok(self.tasks.iter().find(|task| task.id == id).cloned())
+    }
+
     fn get_all_tasks(&self) -> Result<Vec<Task>> {
         Ok(self.tasks.to_vec())
     }
