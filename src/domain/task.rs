@@ -8,6 +8,16 @@ pub struct Task {
     pub completed: bool,
 }
 
+impl Task {
+    pub fn new(id: TaskId, description: String, completed: bool) -> Self {
+        Self {
+            id,
+            description,
+            completed,
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct TaskId(Uuid);
 

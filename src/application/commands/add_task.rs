@@ -17,12 +17,7 @@ impl<R: TaskRepository> Handler<AddTaskCommand> for TaskService<R> {
         AddTaskCommand { description }: AddTaskCommand,
         _ctx: &mut Self::Context,
     ) -> Self::Result {
-        let new_task = Task {
-            id: TaskId::new(),
-            description,
-            completed: false,
-        };
-
+        let new_task = Task::new(TaskId::new(), description, false);
         self.repository.add_task(&new_task)?;
 
         Ok(new_task)
