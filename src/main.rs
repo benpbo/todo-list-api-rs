@@ -5,11 +5,11 @@ mod infrastructure;
 
 use actix::Actor;
 use actix_web::{
-    web::{get, Data},
+    web::{get, post, Data},
     App, HttpServer,
 };
 use application::TaskService;
-use controllers::get_tasks;
+use controllers::{add_task, get_tasks};
 use infrastructure::InMemoryTaskRepository;
 use std::io;
 
@@ -22,6 +22,7 @@ async fn main() -> io::Result<()> {
         App::new()
             .app_data(Data::new(task_service))
             .route("/tasks", get().to(get_tasks::<InMemoryTaskRepository>))
+            .route("/tasks", post().to(add_task::<InMemoryTaskRepository>))
     };
 
     let address = ("0.0.0.0", 8080);
