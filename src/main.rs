@@ -5,7 +5,7 @@ mod infrastructure;
 
 use actix::Actor;
 use actix_web::{
-    web::{get, post, Data},
+    web::{get, post, resource, Data, ServiceConfig},
     App, HttpServer,
 };
 use application::TaskService;
@@ -21,12 +21,19 @@ async fn main() -> io::Result<()> {
     let app = move || {
         App::new()
             .app_data(Data::new(task_service.clone()))
-            .route("/tasks", get().to(get_tasks::<InMemoryTaskRepository>))
-            .route("/tasks", post().to(add_task::<InMemoryTaskRepository>))
+            .configure(routes)
     };
 
     let address = ("0.0.0.0", 8080);
     HttpServer::new(app).bind(address)?.run().await?;
 
     Ok(())
+}
+
+fn routes(cfg: &mut ServiceConfig) {
+    cfg.service(
+        resource("/tasks")
+            .route(get().to(get_tasks::<InMemoryTaskRepository>))
+            .route(post().to(add_task::<InMemoryTaskRepository>)),
+    );
 }
