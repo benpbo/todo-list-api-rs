@@ -15,12 +15,12 @@ use std::io;
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {
-    let app = || {
-        let task_repository = InMemoryTaskRepository::new();
-        let task_service = TaskService::new(task_repository).start();
+    let task_repository = InMemoryTaskRepository::new();
+    let task_service = TaskService::new(task_repository).start();
 
+    let app = move || {
         App::new()
-            .app_data(Data::new(task_service))
+            .app_data(Data::new(task_service.clone()))
             .route("/tasks", get().to(get_tasks::<InMemoryTaskRepository>))
             .route("/tasks", post().to(add_task::<InMemoryTaskRepository>))
     };
