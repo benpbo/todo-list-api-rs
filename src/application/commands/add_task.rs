@@ -12,10 +12,14 @@ pub struct AddTaskCommand {
 impl<R: TaskRepository> Handler<AddTaskCommand> for TaskService<R> {
     type Result = Result<Task>;
 
-    fn handle(&mut self, msg: AddTaskCommand, _ctx: &mut Self::Context) -> Self::Result {
+    fn handle(
+        &mut self,
+        AddTaskCommand { description }: AddTaskCommand,
+        _ctx: &mut Self::Context,
+    ) -> Self::Result {
         let new_task = Task {
             id: TaskId::new(),
-            description: msg.description,
+            description,
             completed: false,
         };
 
