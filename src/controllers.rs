@@ -8,7 +8,7 @@ use serde::Deserialize;
 
 pub async fn get_tasks<R: TaskRepository>(
     task_service: Data<Addr<TaskService<R>>>,
-) -> HttpResponse {
+) -> impl Responder {
     let query = GetAllTasksQuery {};
     let response = match task_service.send(query).await {
         Ok(response) => response,
