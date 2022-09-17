@@ -10,7 +10,7 @@ use actix_web::{
     App, HttpServer,
 };
 use application::TaskService;
-use controllers::{add_task, get_tasks};
+use controllers::{add_task, get_task, get_tasks};
 use infrastructure::InMemoryTaskRepository;
 use std::io;
 
@@ -39,5 +39,6 @@ fn routes(cfg: &mut ServiceConfig) {
         resource("/tasks")
             .route(get().to(get_tasks::<InMemoryTaskRepository>))
             .route(post().to(add_task::<InMemoryTaskRepository>)),
-    );
+    )
+    .service(resource("/tasks/{id}").route(get().to(get_task::<InMemoryTaskRepository>)));
 }

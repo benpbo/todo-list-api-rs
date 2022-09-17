@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Clone, Debug, Serialize)]
@@ -18,7 +18,7 @@ impl Task {
     }
 }
 
-#[derive(Serialize, Hash, Eq, PartialEq, Ord, PartialOrd, Debug, Clone)]
+#[derive(Deserialize, Serialize, Hash, Eq, PartialEq, Ord, PartialOrd, Debug, Clone)]
 pub struct TaskId(Uuid);
 
 impl TaskId {
