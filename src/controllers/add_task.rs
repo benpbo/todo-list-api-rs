@@ -19,7 +19,7 @@ pub async fn add_task<R: TaskRepository>(
     };
 
     match response {
-        Ok(new_task) => HttpResponse::Ok().json(&new_task),
+        Ok(new_task) => HttpResponse::Created().json(&new_task),
         Err(error) => HttpResponse::InternalServerError().body(error.to_string()),
     }
 }
