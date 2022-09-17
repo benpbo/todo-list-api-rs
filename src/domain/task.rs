@@ -18,7 +18,7 @@ impl Task {
     }
 }
 
-#[derive(Serialize, Eq, PartialEq, Ord, PartialOrd, Debug, Clone)]
+#[derive(Serialize, Hash, Eq, PartialEq, Ord, PartialOrd, Debug, Clone)]
 pub struct TaskId(Uuid);
 
 impl TaskId {
