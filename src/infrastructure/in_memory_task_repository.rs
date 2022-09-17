@@ -19,8 +19,8 @@ impl InMemoryTaskRepository {
 }
 
 impl TaskRepository for InMemoryTaskRepository {
-    fn get_task_by_id(&self, id: TaskId) -> Result<Option<Task>> {
-        Ok(self.tasks_by_id.get(&id).cloned())
+    fn get_task_by_id(&self, id: &TaskId) -> Result<Option<Task>> {
+        Ok(self.tasks_by_id.get(id).cloned())
     }
 
     fn get_all_tasks(&self) -> Result<Vec<Task>> {

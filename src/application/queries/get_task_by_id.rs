@@ -17,6 +17,6 @@ impl<R: TaskRepository> Handler<GetTaskById> for TaskService<R> {
         GetTaskById { id }: GetTaskById,
         _ctx: &mut Self::Context,
     ) -> Self::Result {
-        self.repository.get_task_by_id(id)
+        self.repository.get_task_by_id(&id)
     }
 }
