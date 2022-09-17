@@ -22,8 +22,8 @@ impl Task {
 pub struct TaskId(Uuid);
 
 impl TaskId {
-    pub fn new() -> TaskId {
-        TaskId(Uuid::new_v4())
+    pub fn new() -> Self {
+        Self(Uuid::new_v4())
     }
 }
 
