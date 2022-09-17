@@ -5,6 +5,7 @@ mod infrastructure;
 
 use actix::Actor;
 use actix_web::{
+    middleware::Logger,
     web::{get, post, resource, Data, ServiceConfig},
     App, HttpServer,
 };
@@ -15,11 +16,14 @@ use std::io;
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {
+    env_logger::init();
+
     let task_repository = InMemoryTaskRepository::new();
     let task_service = TaskService::new(task_repository).start();
 
     let app = move || {
         App::new()
+            .wrap(Logger::default())
             .app_data(Data::new(task_service.clone()))
             .configure(routes)
     };
