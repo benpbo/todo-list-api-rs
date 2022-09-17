@@ -1,6 +1,7 @@
 use crate::application::{AddTaskCommand, TaskRepository, TaskService};
 use actix::prelude::*;
 use actix_web::{
+    http::header::LOCATION,
     web::{Data, Json},
     HttpResponse, Responder,
 };
@@ -19,7 +20,9 @@ pub async fn add_task<R: TaskRepository>(
     };
 
     match response {
-        Ok(new_task) => HttpResponse::Created().json(&new_task),
+        Ok(new_task) => HttpResponse::Created()
+            .append_header((LOCATION, format!("/tasks/{}", new_task.id)))
+            .json(&new_task),
         Err(error) => HttpResponse::InternalServerError().body(error.to_string()),
     }
 }

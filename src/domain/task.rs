@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::fmt::Display;
 use uuid::Uuid;
 
 #[derive(Clone, Debug, Serialize)]
@@ -24,6 +25,12 @@ pub struct TaskId(Uuid);
 impl TaskId {
     pub fn new() -> Self {
         Self(Uuid::new_v4())
+    }
+}
+
+impl Display for TaskId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
