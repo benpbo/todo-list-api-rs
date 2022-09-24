@@ -1,27 +1,21 @@
 use crate::{
-    application::{GetTaskById, TaskRepository, TaskService},
+    application::{TaskRepository, TaskService},
     domain::TaskId,
 };
-use actix::prelude::*;
 use actix_web::{
     web::{Data, Path},
     HttpResponse, Responder,
 };
 use serde::Deserialize;
+use std::sync::Mutex;
 
 pub async fn get_task<R: TaskRepository>(
-    task_service: Data<Addr<TaskService<R>>>,
+    task_service: Data<Mutex<TaskService<R>>>,
     path: Path<GetTaskByIdPath>,
 ) -> impl Responder {
     let GetTaskByIdPath { id } = path.into_inner();
-    let query = GetTaskById { id };
 
-    let response = match task_service.send(query).await {
-        Ok(response) => response,
-        Err(_) => return HttpResponse::InternalServerError().finish(),
-    };
-
-    match response {
+    match task_service.lock().unwrap().get_task(id).await {
         Ok(Some(task)) => HttpResponse::Ok().json(&task),
         Ok(None) => HttpResponse::NotFound().finish(),
         Err(error) => HttpResponse::InternalServerError().body(error.to_string()),
