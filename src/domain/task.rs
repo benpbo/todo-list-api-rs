@@ -6,15 +6,15 @@ use uuid::Uuid;
 pub struct Task {
     pub id: TaskId,
     pub description: String,
-    pub completed: TaskCompleted,
+    pub is_completed: bool,
 }
 
 impl Task {
-    pub fn new(id: TaskId, description: String, completed: TaskCompleted) -> Self {
+    pub fn new(id: TaskId, description: String, is_completed: bool) -> Self {
         Self {
             id,
             description,
-            completed,
+            is_completed,
         }
     }
 }
@@ -32,10 +32,4 @@ impl Display for TaskId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
-}
-
-#[derive(Clone, Debug, Serialize)]
-pub enum TaskCompleted {
-    Completed,
-    NotCompleted,
 }

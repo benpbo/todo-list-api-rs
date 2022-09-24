@@ -3,7 +3,7 @@ use super::{
     queries::{GetAllTasksQuery, GetTaskByIdQuery},
     TaskRepository,
 };
-use crate::domain::{Task, TaskCompleted, TaskId};
+use crate::domain::{Task, TaskId};
 use async_trait::async_trait;
 
 pub struct TaskService<R: TaskRepository> {
@@ -33,7 +33,7 @@ impl<R: TaskRepository> GetTaskByIdQuery for TaskService<R> {
 #[async_trait]
 impl<R: TaskRepository> CreateTaskWithDescriptionCommand for TaskService<R> {
     async fn execute(&mut self, description: String) -> anyhow::Result<Task> {
-        let new_task = Task::new(TaskId::new(), description, TaskCompleted::NotCompleted);
+        let new_task = Task::new(TaskId::new(), description, false);
         self.repository.add_task(&new_task)?;
 
         Ok(new_task)
