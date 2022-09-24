@@ -1,3 +1,3 @@
-mod in_memory_task_repository;
+mod dynamodb_task_respoitory;
 
-pub use in_memory_task_repository::InMemoryTaskRepository;
+pub use dynamodb_task_respoitory::DynamoDbTaskRepository;

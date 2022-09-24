@@ -9,15 +9,17 @@ use actix_web::{
     App, HttpServer,
 };
 use application::{commands::*, queries::*, TaskService};
+use aws_sdk_dynamodb::Client;
 use controllers::{add_task, get_task, get_tasks};
-use infrastructure::InMemoryTaskRepository;
+use infrastructure::DynamoDbTaskRepository;
 use std::{io, sync::Mutex};
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {
     env_logger::init();
 
-    let task_repository = InMemoryTaskRepository::new();
+    let sdk_config = aws_config::from_env().load().await;
+    let task_repository = DynamoDbTaskRepository::new(Client::new(&sdk_config), "task");
     let task_service = Data::new(Mutex::new(TaskService::new(task_repository)));
 
     let app = move || {

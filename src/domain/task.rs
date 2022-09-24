@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use uuid::Uuid;
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Task {
     pub id: TaskId,
     pub description: String,
