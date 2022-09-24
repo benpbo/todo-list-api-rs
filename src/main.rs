@@ -8,7 +8,7 @@ use actix_web::{
     web::{get, post, resource, Data, ServiceConfig},
     App, HttpServer,
 };
-use application::TaskService;
+use application::{commands::*, queries::*, TaskService};
 use controllers::{add_task, get_task, get_tasks};
 use infrastructure::InMemoryTaskRepository;
 use std::{io, sync::Mutex};
@@ -23,8 +23,7 @@ async fn main() -> io::Result<()> {
     let app = move || {
         App::new()
             .wrap(Logger::default())
-            .app_data(task_service.clone())
-            .configure(routes)
+            .configure(|cfg| config(cfg, task_service.clone()))
     };
 
     let address = ("0.0.0.0", 8080);
@@ -33,11 +32,15 @@ async fn main() -> io::Result<()> {
     Ok(())
 }
 
-fn routes(cfg: &mut ServiceConfig) {
-    cfg.service(
-        resource("/tasks")
-            .route(get().to(get_tasks::<InMemoryTaskRepository>))
-            .route(post().to(add_task::<InMemoryTaskRepository>)),
-    )
-    .service(resource("/tasks/{id}").route(get().to(get_task::<InMemoryTaskRepository>)));
+fn config<S: GetAllTasksQuery + GetTaskByIdQuery + CreateTaskWithDescriptionCommand + 'static>(
+    cfg: &mut ServiceConfig,
+    task_service: Data<Mutex<S>>,
+) {
+    cfg.app_data(task_service)
+        .service(
+            resource("/tasks")
+                .route(get().to(get_tasks::<S>))
+                .route(post().to(add_task::<S>)),
+        )
+        .service(resource("/tasks/{id}").route(get().to(get_task::<S>)));
 }

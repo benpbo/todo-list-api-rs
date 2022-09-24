@@ -1,4 +1,4 @@
-use crate::application::{TaskRepository, TaskService};
+use crate::application::commands::CreateTaskWithDescriptionCommand;
 use actix_web::{
     http::header::LOCATION,
     web::{Data, Json},
@@ -7,13 +7,13 @@ use actix_web::{
 use serde::Deserialize;
 use std::sync::Mutex;
 
-pub async fn add_task<R: TaskRepository>(
+pub async fn add_task<C: CreateTaskWithDescriptionCommand>(
     body: Json<AddTaskBody>,
-    task_service: Data<Mutex<TaskService<R>>>,
+    create_task: Data<Mutex<C>>,
 ) -> impl Responder {
     let AddTaskBody { description } = body.into_inner();
 
-    match task_service.lock().unwrap().create_task(description).await {
+    match create_task.lock().unwrap().execute(description).await {
         Ok(new_task) => HttpResponse::Created()
             .append_header((LOCATION, format!("/tasks/{}", new_task.id)))
             .json(&new_task),
