@@ -19,14 +19,14 @@ impl<R: TaskRepository> TaskService<R> {
 #[async_trait]
 impl<R: TaskRepository> GetAllTasksQuery for TaskService<R> {
     async fn execute(&self) -> anyhow::Result<Vec<Task>, anyhow::Error> {
-        self.repository.get_all_tasks()
+        self.repository.get_all_tasks().await
     }
 }
 
 #[async_trait]
 impl<R: TaskRepository> GetTaskByIdQuery for TaskService<R> {
     async fn execute(&self, id: TaskId) -> anyhow::Result<Option<Task>> {
-        self.repository.get_task_by_id(&id)
+        self.repository.get_task_by_id(&id).await
     }
 }
 
@@ -34,7 +34,7 @@ impl<R: TaskRepository> GetTaskByIdQuery for TaskService<R> {
 impl<R: TaskRepository> CreateTaskWithDescriptionCommand for TaskService<R> {
     async fn execute(&mut self, description: String) -> anyhow::Result<Task> {
         let new_task = Task::new(TaskId::new(), description, false);
-        self.repository.add_task(&new_task)?;
+        self.repository.add_task(&new_task).await?;
 
         Ok(new_task)
     }

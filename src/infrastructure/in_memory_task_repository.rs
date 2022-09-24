@@ -5,6 +5,7 @@ use crate::{
     domain::{Task, TaskId},
 };
 use anyhow::Result;
+use async_trait::async_trait;
 
 pub struct InMemoryTaskRepository {
     tasks_by_id: HashMap<TaskId, Task>,
@@ -18,16 +19,17 @@ impl InMemoryTaskRepository {
     }
 }
 
+#[async_trait]
 impl TaskRepository for InMemoryTaskRepository {
-    fn get_task_by_id(&self, id: &TaskId) -> Result<Option<Task>> {
+    async fn get_task_by_id(&self, id: &TaskId) -> Result<Option<Task>> {
         Ok(self.tasks_by_id.get(id).cloned())
     }
 
-    fn get_all_tasks(&self) -> Result<Vec<Task>> {
+    async fn get_all_tasks(&self) -> Result<Vec<Task>> {
         Ok(self.tasks_by_id.values().cloned().collect())
     }
 
-    fn add_task(&mut self, task: &Task) -> Result<()> {
+    async fn add_task(&mut self, task: &Task) -> Result<()> {
         self.tasks_by_id.insert(task.id.clone(), task.clone());
         Ok(())
     }
