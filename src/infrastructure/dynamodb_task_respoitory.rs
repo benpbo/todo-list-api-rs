@@ -45,7 +45,7 @@ impl TaskRepository for DynamoDbTaskRepository<'_> {
         }
     }
 
-    async fn add_task(&mut self, task: &Task) -> Result<()> {
+    async fn add_task(&self, task: &Task) -> Result<()> {
         let item = to_item(task)?;
         self.client
             .put_item()

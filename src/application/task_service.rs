@@ -32,7 +32,7 @@ impl<R: TaskRepository> GetTaskByIdQuery for TaskService<R> {
 
 #[async_trait]
 impl<R: TaskRepository> CreateTaskWithDescriptionCommand for TaskService<R> {
-    async fn execute(&mut self, description: String) -> anyhow::Result<Task> {
+    async fn execute(&self, description: String) -> anyhow::Result<Task> {
         let new_task = Task::new(TaskId::new(), description, false);
         self.repository.add_task(&new_task).await?;
 

@@ -12,7 +12,7 @@ use application::{commands::*, queries::*, TaskService};
 use aws_sdk_dynamodb::Client;
 use controllers::{add_task, get_task, get_tasks};
 use infrastructure::DynamoDbTaskRepository;
-use std::{io, sync::Mutex};
+use std::io;
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {
@@ -20,7 +20,7 @@ async fn main() -> io::Result<()> {
 
     let sdk_config = aws_config::from_env().load().await;
     let task_repository = DynamoDbTaskRepository::new(Client::new(&sdk_config), "task");
-    let task_service = Data::new(Mutex::new(TaskService::new(task_repository)));
+    let task_service = Data::new(TaskService::new(task_repository));
 
     let app = move || {
         App::new()
@@ -36,7 +36,7 @@ async fn main() -> io::Result<()> {
 
 fn config<S: GetAllTasksQuery + GetTaskByIdQuery + CreateTaskWithDescriptionCommand + 'static>(
     cfg: &mut ServiceConfig,
-    task_service: Data<Mutex<S>>,
+    task_service: Data<S>,
 ) {
     cfg.app_data(task_service)
         .service(

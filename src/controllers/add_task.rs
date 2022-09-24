@@ -5,15 +5,14 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use serde::Deserialize;
-use std::sync::Mutex;
 
 pub async fn add_task<C: CreateTaskWithDescriptionCommand>(
     body: Json<AddTaskBody>,
-    create_task: Data<Mutex<C>>,
+    create_task: Data<C>,
 ) -> impl Responder {
     let AddTaskBody { description } = body.into_inner();
 
-    match create_task.lock().unwrap().execute(description).await {
+    match create_task.execute(description).await {
         Ok(new_task) => HttpResponse::Created()
             .append_header((LOCATION, format!("/tasks/{}", new_task.id)))
             .json(&new_task),
