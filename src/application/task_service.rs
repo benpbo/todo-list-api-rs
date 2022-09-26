@@ -1,10 +1,9 @@
-use super::{
-    commands::CreateTaskWithDescriptionCommand,
-    queries::{GetAllTasksQuery, GetTaskByIdQuery},
-    TaskRepository,
-};
-use crate::domain::{Task, TaskId};
 use async_trait::async_trait;
+
+use super::commands::{CreateTaskWithDescriptionCommand, UpdateTaskCommand, UpdateTaskError};
+use super::queries::{GetAllTasksQuery, GetTaskByIdQuery};
+use super::TaskRepository;
+use crate::domain::{Task, TaskId};
 
 pub struct TaskService<R: TaskRepository> {
     repository: R,
@@ -37,5 +36,12 @@ impl<R: TaskRepository> CreateTaskWithDescriptionCommand for TaskService<R> {
         self.repository.add_task(&new_task).await?;
 
         Ok(new_task)
+    }
+}
+
+#[async_trait]
+impl<R: TaskRepository> UpdateTaskCommand for TaskService<R> {
+    async fn execute(&self, task: &Task) -> Result<(), UpdateTaskError> {
+        Ok(self.repository.update_task(task).await?)
     }
 }
