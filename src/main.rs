@@ -5,12 +5,12 @@ mod infrastructure;
 
 use actix_web::{
     middleware::Logger,
-    web::{get, post, resource, Data, ServiceConfig},
+    web::{get, post, put, resource, Data, ServiceConfig},
     App, HttpServer,
 };
 use application::{commands::*, queries::*, TaskService};
 use aws_sdk_dynamodb::Client;
-use controllers::{add_task, get_task, get_tasks};
+use controllers::{add_task, get_task, get_tasks, update_task};
 use infrastructure::DynamoDbTaskRepository;
 use std::io;
 
@@ -34,15 +34,23 @@ async fn main() -> io::Result<()> {
     Ok(())
 }
 
-fn config<S: GetAllTasksQuery + GetTaskByIdQuery + CreateTaskWithDescriptionCommand + 'static>(
-    cfg: &mut ServiceConfig,
-    task_service: Data<S>,
-) {
+fn config<S>(cfg: &mut ServiceConfig, task_service: Data<S>)
+where
+    S: GetAllTasksQuery
+        + GetTaskByIdQuery
+        + CreateTaskWithDescriptionCommand
+        + UpdateTaskCommand
+        + 'static,
+{
     cfg.app_data(task_service)
         .service(
             resource("/tasks")
                 .route(get().to(get_tasks::<S>))
                 .route(post().to(add_task::<S>)),
         )
-        .service(resource("/tasks/{id}").route(get().to(get_task::<S>)));
+        .service(
+            resource("/tasks/{id}")
+                .route(get().to(get_task::<S>))
+                .route(put().to(update_task::<S>)),
+        );
 }
