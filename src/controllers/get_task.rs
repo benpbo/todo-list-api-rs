@@ -11,7 +11,7 @@ pub async fn get_task<Q: GetTaskByIdQuery>(
 ) -> impl Responder {
     let GetTaskByIdPath { id } = path.into_inner();
 
-    match get_task.execute(id).await {
+    match get_task.execute(&id).await {
         Ok(Some(task)) => HttpResponse::Ok().json(&task),
         Ok(None) => HttpResponse::NotFound().finish(),
         Err(error) => HttpResponse::InternalServerError().body(error.to_string()),

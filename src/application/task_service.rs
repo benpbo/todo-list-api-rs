@@ -25,8 +25,8 @@ impl<R: TaskRepository> GetAllTasksQuery for TaskService<R> {
 
 #[async_trait]
 impl<R: TaskRepository> GetTaskByIdQuery for TaskService<R> {
-    async fn execute(&self, id: TaskId) -> anyhow::Result<Option<Task>> {
-        self.repository.get_task_by_id(&id).await
+    async fn execute(&self, id: &TaskId) -> anyhow::Result<Option<Task>> {
+        self.repository.get_task_by_id(id).await
     }
 }
 
